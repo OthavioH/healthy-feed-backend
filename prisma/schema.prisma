@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String      @id @default(uuid())
+  name     String
+  email    String      @unique
+  password String
+
+  nutrition Nutrition?
+  days     Day[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt 
+}
+
+model Nutrition {
+  id        String      @id @default(uuid())
+  
+  diaryCaloriesGoal  Int @default(0)
+  diaryProteinGoal   Int @default(0)
+  diaryCarbsGoal     Int @default(0)
+
+  user     User        @relation(fields: [userId], references: [id])
+  userId   String
+
+  @@unique([userId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Day {
+  id      String      @id @default(uuid())
+  date    DateTime
+
+  user   User        @relation(fields: [userId], references: [id])
+  userId String
+
+  meals   Meal[]
+
+  @@map("days")
+}
+
+model Meal {
+  id       String      @id @default(uuid())
+  name      String
+
+  calories  Int @default(0)
+  protein   Int @default(0)
+  carbs     Int   @default(0)
+  totalFat       Int @default(0)
+  saturatedFat   Int @default(0)
+  transFat       Int @default(0)
+  cholesterol    Int @default(0)
+  sodium         Int @default(0)
+  dietaryFiber   Int @default(0)
+
+  foods   Food[]
+
+  day     Day         @relation(fields: [dayId], references: [id])
+  dayId  String
+
+  @@unique([dayId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Food {
+  id       String      @id @default(uuid())
+  name      String
+
+  quantityFormatCode Int @default(0)
+  quantity       Int @default(0)
+  calories  Int @default(0)
+  protein   Int @default(0)
+  carbs     Int   @default(0)
+  totalFat       Int @default(0)
+  saturatedFat   Int @default(0)
+  transFat       Int @default(0)
+  cholesterol    Int @default(0)
+  sodium         Int @default(0)
+  dietaryFiber   Int @default(0)
+
+  meal    Meal        @relation(fields: [mealId], references: [id])
+  mealId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
