@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { NutritionService } from './nutrition.service';
 import NutritionCreateModel from 'src/shared/models/NutritionCreateModel';
 
@@ -6,9 +6,9 @@ import NutritionCreateModel from 'src/shared/models/NutritionCreateModel';
 export class NutritionController {
   constructor(private nutritionService: NutritionService) {}
 
-  @Get()
-  async getNutrition(@Body() body: { userId: string }) {
-    return await this.nutritionService.getNutrition(body.userId);
+  @Get(':id')
+  async getNutrition(@Param('id') id: string) {
+    return await this.nutritionService.getNutrition(id);
   }
 
   @Post()
