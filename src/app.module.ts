@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseService } from './database/database.service';
@@ -12,6 +12,7 @@ import FoodController from './food/food.controller';
 import { DayService } from './day/day.service';
 import MealService from './meal/meal.service';
 import FoodService from './food/food.service';
+import { AuthMiddleware } from './middleware/auth/auth.middleware';
 
 @Module({
   imports: [],
@@ -33,4 +34,17 @@ import FoodService from './food/food.service';
     FoodService,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .exclude('user/login', 'user/register')
+      .forRoutes(
+        UserController,
+        NutritionController,
+        DayController,
+        MealController,
+        FoodController,
+      );
+  }
+}

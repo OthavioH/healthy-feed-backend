@@ -20,10 +20,6 @@ export class UserService {
     });
   }
 
-  async getUsers(): Promise<User[]> {
-    return await this.databaseService.user.findMany();
-  }
-
   async deleteUser(id: string): Promise<User> {
     return await this.databaseService.user.delete({
       where: {
